@@ -1,4 +1,4 @@
-Boilerplate project for:
+Boilerplate project with:
 * react
 * typescript
 * jest
