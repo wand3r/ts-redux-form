@@ -1,4 +1,4 @@
 /node_modules
 /build
 /.vscode
-webpack.config.js
+/webpack.config.js
