@@ -1,0 +1,45 @@
+{
+  "name": "react-typescript-boilerplate",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/index.ts",
+  "scripts": {
+    "clean": "rimraf ./build/**.*",
+    "build": "npm run clean && tsc webpack.config.ts && NODE_ENV=development webpack",
+    "build-production": "npm run clean && tsc webpack.config.ts && NODE_ENV=production webpack",
+    "dev-server": "tsc webpack.config.ts && NODE_ENV=development webpack-dev-server",
+    "test-watch": "jest --config jest.config.json --watch",
+    "storybook": "start-storybook -p 9001 -c .storybook"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@storybook/addon-actions": "^3.1.8",
+    "@storybook/addon-knobs": "^3.1.8",
+    "@storybook/addon-notes": "^3.1.6",
+    "@storybook/react": "^3.1.8",
+    "@types/html-webpack-plugin": "^2.28.0",
+    "@types/jest": "^20.0.2",
+    "@types/react-hot-loader": "^3.0.3",
+    "@types/storybook__react": "^3.0.2",
+    "@types/webpack": "^3.0.4",
+    "@types/webpack-dev-server": "^2.4.0",
+    "html-webpack-plugin": "^2.29.0",
+    "jest": "^20.0.4",
+    "react-hot-loader": "^3.0.0-beta.7",
+    "rimraf": "^2.6.1",
+    "ts-jest": "^20.0.7",
+    "ts-loader": "^2.2.2",
+    "typescript": "^2.4.1",
+    "webpack": "^3.2.0",
+    "webpack-dev-server": "^2.5.1"
+  },
+  "dependencies": {
+    "@types/react": "^15.0.38",
+    "@types/react-dom": "^15.5.1",
+    "glamor": "^3.0.0-3",
+    "react": "^15.6.1",
+    "react-dom": "^15.6.1"
+  }
+}
