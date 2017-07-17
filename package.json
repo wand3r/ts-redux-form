@@ -9,7 +9,7 @@
     "build-production": "npm run clean && tsc webpack.config.ts && NODE_ENV=production webpack",
     "dev-server": "tsc webpack.config.ts && NODE_ENV=development webpack-dev-server",
     "test-watch": "jest --config jest.config.json --watch",
-    "storybook": "start-storybook -p 9001 -c .storybook"
+    "storybook": "start-storybook -p 9001 -c .storybook  -s ./static"
   },
   "keywords": [],
   "author": "",

@@ -78,7 +78,7 @@ const config: webpack.Configuration = {
       warnings: true,
       errors: true,
     },
-    contentBase: false,
+    contentBase: resolve(__dirname, "static"),
   },
 };
 
