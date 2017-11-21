@@ -3,9 +3,9 @@
     "target": "es5",
     "module": "commonjs",
     "jsx": "react",
+    "skipLibCheck": true,
     "sourceMap": true,
     "removeComments": true,
-
     "noImplicitAny": true,
     "strictNullChecks": true,
     "noImplicitThis": true,
