@@ -1,21 +1,21 @@
-import * as React from "react"
-import * as ReactDOM from "react-dom"
+import React from "react"
+import ReactDOM from "react-dom"
 import { AppContainer } from "react-hot-loader"
+import { App } from "./app"
 
-const render = () => {
-  const { App } = require("./app")
+const render = (Component: React.ComponentType) => {
   ReactDOM.render(
     <AppContainer>
-      <App />
+      <Component />
     </AppContainer>,
     document.getElementById("app"),
   )
 }
 
-render()
+render(App)
 
 if (module.hot) {
   module.hot.accept("./app", () => {
-    render()
+    render(App)
   })
 }

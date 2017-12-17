@@ -1,3 +1,8 @@
-import * as React from "react"
+import React from "react"
+import { FizzBuzzCounter } from "./sample-module/component"
 
-export const App = () => <div>Hello world !</div>
+export const App = () => (
+  <div>
+    <FizzBuzzCounter />
+  </div>
+)

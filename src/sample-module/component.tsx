@@ -1,4 +1,4 @@
-import * as React from "react"
+import React from "react"
 import { fizzBuzz } from "./index"
 import { css } from "glamor"
 
@@ -36,7 +36,7 @@ export class FizzBuzzCounter extends React.Component<{}, { counter: number }> {
     const { counter } = this.state
     return (
       <div>
-        <button onClick={this.increment}>Incremenet</button>
+        <button onClick={this.increment}>Incremenet!</button>
         <FizzBuzzValue number={counter} />
       </div>
     )

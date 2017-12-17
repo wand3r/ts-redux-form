@@ -16,7 +16,7 @@ const entry: Config["entry"] = {
 const output: Config["output"] = {
   filename: "[name].js",
   path: resolvePath(__dirname, "build"),
-  publicPath: "",
+  publicPath: "/",
 }
 
 const resolve: Config["resolve"] = {
@@ -24,7 +24,7 @@ const resolve: Config["resolve"] = {
   extensions: [".ts", ".tsx", ".js"],
 }
 
-const module: Config["module"] = {
+const modules: Config["module"] = {
   rules: [
     {
       test: /\.tsx?$/,
@@ -72,13 +72,14 @@ const devServer: Config["devServer"] = {
     errors: true,
   },
   contentBase: resolvePath(__dirname, "static"),
+  publicPath: "/",
 }
 
 const config: Config = {
   entry,
   output,
   resolve,
-  module,
+  module: modules,
   devtool,
   plugins,
   devServer,
