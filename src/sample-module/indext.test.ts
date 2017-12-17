@@ -1,4 +1,4 @@
-import { fizzBuzz } from "./index";
+import { fizzBuzz } from "./index"
 
 test("fizzBuzz", () => {
   const expected = [
@@ -38,7 +38,7 @@ test("fizzBuzz", () => {
     34,
     "Buzz",
     "Fizz",
-  ];
-  const result = expected.map((x, i) => fizzBuzz(i + 1));
-  expect(result).toEqual(expected);
-});
+  ]
+  const result = expected.map((x, i) => fizzBuzz(i + 1))
+  expect(result).toEqual(expected)
+})

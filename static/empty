@@ -1,0 +1,1 @@
+Put static files here. All files from this folder will be served by storybook and webpack-dev-server.
