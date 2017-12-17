@@ -1,85 +1,87 @@
-import { resolve } from "path";
-import * as webpack from "webpack";
-import * as HtmlWebpackPlugion from "html-webpack-plugin";
+import { resolve as resolvePath } from "path"
+import * as webpack from "webpack"
+import * as HtmlWebpackPlugion from "html-webpack-plugin"
+import { getEnvironment } from "./globalVariables"
 
-type Environment = "development" | "production";
+type Config = webpack.Configuration
 
-function isEnvironment(arg: any): arg is Environment {
-  return arg == "development" || arg == "production";
+const environment = getEnvironment()
+
+console.log(`Running webpack in ${environment} mode`)
+
+const entry: Config["entry"] = {
+  app: ["react-hot-loader/patch", resolvePath(__dirname, "src", "index.tsx")],
 }
 
-const environment = process.env.NODE_ENV;
+const output: Config["output"] = {
+  filename: "[name].js",
+  path: resolvePath(__dirname, "build"),
+  publicPath: "",
+}
 
-if (!isEnvironment(environment))
-  throw new Error("Invalid environment variable");
+const resolve: Config["resolve"] = {
+  modules: ["node_modules", resolvePath(__dirname, "src")],
+  extensions: [".ts", ".tsx", ".js"],
+}
 
-console.log(`Running webpack in ${environment} mode`);
+const module: Config["module"] = {
+  rules: [
+    {
+      test: /\.tsx?$/,
+      use: [{ loader: "react-hot-loader/webpack" }, { loader: "ts-loader" }],
+      include: resolvePath(__dirname, "src"),
+    },
+  ],
+}
 
-let plugins: webpack.Plugin[] = [
+const plugins: Config["plugins"] = [
   new webpack.DefinePlugin({
     "process.env": {
       NODE_ENV: JSON.stringify(environment),
     },
   }),
-];
+  ...(environment === "development"
+    ? [
+        new HtmlWebpackPlugion({
+          template: resolvePath("src", "index.html"),
+        }),
+        new webpack.HotModuleReplacementPlugin(),
+        new webpack.NamedModulesPlugin(),
+      ]
+    : []),
+  ...(environment === "production"
+    ? [
+        new webpack.optimize.UglifyJsPlugin({
+          compress: {
+            warnings: true,
+          },
+        }),
+      ]
+    : []),
+]
 
-if (environment === "development") {
-  plugins = [
-    ...plugins,
-    new HtmlWebpackPlugion({
-      template: resolve("src", "index.html"),
-    }),
-    new webpack.HotModuleReplacementPlugin(),
-    new webpack.NamedModulesPlugin(),
-  ];
+const devtool: Config["devtool"] = "cheap-module-source-map"
+
+const devServer: Config["devServer"] = {
+  host: "localhost",
+  port: 3000,
+  hot: true,
+  inline: true,
+  overlay: {
+    warnings: true,
+    errors: true,
+  },
+  contentBase: resolvePath(__dirname, "static"),
 }
 
-if (environment === "production") {
-  plugins = [
-    ...plugins,
-    new webpack.optimize.UglifyJsPlugin({
-      compress: {
-        warnings: true,
-      },
-    }),
-  ];
-}
-
-const config: webpack.Configuration = {
-  entry: {
-    app: ["react-hot-loader/patch", resolve(__dirname, "src", "index.tsx")],
-  },
-  output: {
-    filename: "[name].js",
-    path: resolve(__dirname, "build"),
-    publicPath: "",
-  },
-  devtool: "cheap-module-source-map",
-  resolve: {
-    modules: ["node_modules", resolve(__dirname, "src")],
-    extensions: [".ts", ".tsx", ".js"],
-  },
-  module: {
-    rules: [
-      {
-        test: /\.tsx?$/,
-        use: [{ loader: "react-hot-loader/webpack" }, { loader: "ts-loader" }],
-        include: resolve(__dirname, "src"),
-      },
-    ],
-  },
+const config: Config = {
+  entry,
+  output,
+  resolve,
+  module,
+  devtool,
   plugins,
-  devServer: {
-    host: "localhost",
-    port: 3000,
-    hot: true,
-    inline: true,
-    overlay: {
-      warnings: true,
-      errors: true,
-    },
-    contentBase: resolve(__dirname, "static"),
-  },
-};
+  devServer,
+}
 
-module.exports = config;
+export default config
