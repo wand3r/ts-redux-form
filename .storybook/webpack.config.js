@@ -1,4 +1,5 @@
-var path = require("path");
+const path = require("path")
+const autoprefixer = require("autoprefixer")
 
 module.exports = function(storybookConfig, configType) {
   storybookConfig.module.rules = [
@@ -8,14 +9,23 @@ module.exports = function(storybookConfig, configType) {
       include: path.resolve("./"),
       use: ["ts-loader"],
     },
-  ];
+    {
+      test: /\.css$/,
+      use: [
+        { loader: "style-loader" },
+        { loader: "css-loader" },
+        { loader: "postcss-loader", options: { plugins: [autoprefixer] } },
+      ],
+    },
+  ]
 
-  storybookConfig.devtool = "cheap-module-source-map";
+  storybookConfig.devtool = "cheap-module-source-map"
   storybookConfig.resolve.extensions = [
     ...storybookConfig.resolve.extensions,
     ".ts",
     ".tsx",
-  ];
+    ".css",
+  ]
 
-  return storybookConfig;
-};
+  return storybookConfig
+}
