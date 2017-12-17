@@ -10,12 +10,15 @@ module.exports = function(storybookConfig, configType) {
       use: ["ts-loader"],
     },
     {
-      test: /\.s?css$/,
+      test: /\.scss$/,
       use: [
         { loader: "style-loader" },
-        { loader: "css-loader" },
-        { loader: "postcss-loader", options: { plugins: [autoprefixer] } },
-        { loader: "sass-loader" },
+        { loader: "css-loader", options: { sourceMap: true } },
+        {
+          loader: "postcss-loader",
+          options: { plugins: [autoprefixer], sourceMap: true },
+        },
+        { loader: "sass-loader", options: { sourceMap: true } },
       ],
     },
   ]
@@ -25,7 +28,6 @@ module.exports = function(storybookConfig, configType) {
     ...storybookConfig.resolve.extensions,
     ".ts",
     ".tsx",
-    ".css",
     ".scss",
   ]
 

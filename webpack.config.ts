@@ -23,8 +23,13 @@ const output: Config["output"] = {
 
 const resolve: Config["resolve"] = {
   modules: ["node_modules", resolvePath(__dirname, "src")],
-  extensions: [".ts", ".tsx", ".js", ".css", ".scss"],
+  extensions: [".ts", ".tsx", ".js", ".scss"],
 }
+
+const extractSass = new ExtractTextPlugin({
+  filename: "[name].[contenthash].css",
+  disable: environment === "development",
+})
 
 const modules: Config["module"] = {
   rules: [
@@ -34,13 +39,18 @@ const modules: Config["module"] = {
       include: resolvePath(__dirname, "src"),
     },
     {
-      test: /\.s?css$/,
-      use: [
-        { loader: "style-loader" },
-        { loader: "css-loader" },
-        { loader: "postcss-loader", options: { plugins: [autoprefixer] } },
-        { loader: "sass-loader" },
-      ],
+      test: /\.scss$/,
+      use: extractSass.extract({
+        use: [
+          { loader: "css-loader", options: { sourceMap: true } },
+          {
+            loader: "postcss-loader",
+            options: { plugins: [autoprefixer], sourceMap: true },
+          },
+          { loader: "sass-loader", options: { sourceMap: true } },
+        ],
+        fallback: "style-loader",
+      }),
     },
   ],
 }
@@ -51,6 +61,7 @@ const plugins: Config["plugins"] = [
       NODE_ENV: JSON.stringify(environment),
     },
   }),
+  extractSass,
   ...(environment === "development"
     ? [
         new HtmlWebpackPlugion({
@@ -66,9 +77,6 @@ const plugins: Config["plugins"] = [
           compress: {
             warnings: true,
           },
-        }),
-        new ExtractTextPlugin({
-          filename: "[name].[contenthash].css",
         }),
       ]
     : []),
