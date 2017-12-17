@@ -10,11 +10,12 @@ module.exports = function(storybookConfig, configType) {
       use: ["ts-loader"],
     },
     {
-      test: /\.css$/,
+      test: /\.s?css$/,
       use: [
         { loader: "style-loader" },
         { loader: "css-loader" },
         { loader: "postcss-loader", options: { plugins: [autoprefixer] } },
+        { loader: "sass-loader" },
       ],
     },
   ]
@@ -25,6 +26,7 @@ module.exports = function(storybookConfig, configType) {
     ".ts",
     ".tsx",
     ".css",
+    ".scss",
   ]
 
   return storybookConfig

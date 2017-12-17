@@ -1,6 +1,6 @@
 import React from "react"
 import { fizzBuzz } from "./index"
-import { css } from "glamor"
+import "./style"
 
 const colorsMap = {
   Fizz: "yellow",
@@ -10,18 +10,9 @@ const colorsMap = {
 
 export const FizzBuzzValue = ({ number }: { number: number }) => {
   const fizzBuzzValue = fizzBuzz(number)
-  return (
-    <span
-      {...css({
-        color:
-          typeof fizzBuzzValue === "string"
-            ? colorsMap[fizzBuzzValue]
-            : undefined,
-      })}
-    >
-      {fizzBuzzValue}
-    </span>
-  )
+  const colorClass =
+    typeof fizzBuzzValue === "string" ? colorsMap[fizzBuzzValue] : ""
+  return <span className={colorClass}>{fizzBuzzValue}</span>
 }
 
 export class FizzBuzzCounter extends React.Component<{}, { counter: number }> {
@@ -35,7 +26,7 @@ export class FizzBuzzCounter extends React.Component<{}, { counter: number }> {
   render() {
     const { counter } = this.state
     return (
-      <div>
+      <div className="fizz-buzz">
         <button onClick={this.increment}>Incremenet!</button>
         <FizzBuzzValue number={counter} />
       </div>

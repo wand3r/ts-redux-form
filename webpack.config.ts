@@ -2,6 +2,7 @@ import { resolve as resolvePath } from "path"
 import * as webpack from "webpack"
 import * as HtmlWebpackPlugion from "html-webpack-plugin"
 import * as autoprefixer from "autoprefixer"
+import * as ExtractTextPlugin from "extract-text-webpack-plugin"
 import { getEnvironment } from "./globalVariables"
 
 type Config = webpack.Configuration
@@ -22,7 +23,7 @@ const output: Config["output"] = {
 
 const resolve: Config["resolve"] = {
   modules: ["node_modules", resolvePath(__dirname, "src")],
-  extensions: [".ts", ".tsx", ".js", ".css"],
+  extensions: [".ts", ".tsx", ".js", ".css", ".scss"],
 }
 
 const modules: Config["module"] = {
@@ -33,11 +34,12 @@ const modules: Config["module"] = {
       include: resolvePath(__dirname, "src"),
     },
     {
-      test: /\.css$/,
+      test: /\.s?css$/,
       use: [
         { loader: "style-loader" },
         { loader: "css-loader" },
         { loader: "postcss-loader", options: { plugins: [autoprefixer] } },
+        { loader: "sass-loader" },
       ],
     },
   ],
@@ -64,6 +66,9 @@ const plugins: Config["plugins"] = [
           compress: {
             warnings: true,
           },
+        }),
+        new ExtractTextPlugin({
+          filename: "[name].[contenthash].css",
         }),
       ]
     : []),

@@ -5,10 +5,14 @@
   "main": "src/index.ts",
   "scripts": {
     "clean": "rimraf ./build/**.*",
-    "compile-webpack-config": "tsc --allowSyntheticDefaultImports --skipLibCheck webpack.config.ts",
-    "build": "npm run clean && npm run compile-webpack-config && NODE_ENV=development webpack",
-    "build-production": "npm run clean && npm run compile-webpack-config && NODE_ENV=production webpack",
-    "dev-server": "npm run compile-webpack-config && NODE_ENV=development webpack-dev-server",
+    "compile-webpack-config":
+      "tsc --allowSyntheticDefaultImports --skipLibCheck webpack.config.ts",
+    "build":
+      "npm run clean && npm run compile-webpack-config && NODE_ENV=development webpack",
+    "build-production":
+      "npm run clean && npm run compile-webpack-config && NODE_ENV=production webpack",
+    "dev-server":
+      "npm run compile-webpack-config && NODE_ENV=development webpack-dev-server",
     "test": "jest",
     "test-watch": "jest --watch",
     "storybook": "start-storybook -p 9001 -c .storybook  -s ./static"
@@ -17,11 +21,12 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@storybook/addon-actions": "^3.2.16",
-    "@storybook/addon-knobs": "^3.2.16",
-    "@storybook/addon-notes": "^3.2.16",
-    "@storybook/react": "^3.2.16",
+    "@storybook/addon-actions": "^3.2.17",
+    "@storybook/addon-knobs": "^3.2.17",
+    "@storybook/addon-notes": "^3.2.17",
+    "@storybook/react": "^3.2.17",
     "@types/autoprefixer": "^6.7.3",
+    "@types/extract-text-webpack-plugin": "^3.0.0",
     "@types/html-webpack-plugin": "^2.30.1",
     "@types/jest": "^21.1.6",
     "@types/node": "^8.0.53",
@@ -34,11 +39,14 @@
     "@types/webpack": "^3.8.1",
     "@types/webpack-dev-server": "^2.9.2",
     "autoprefixer": "^7.2.3",
+    "extract-text-webpack-plugin": "^3.0.2",
     "html-webpack-plugin": "^2.30.1",
     "jest": "^21.2.1",
+    "node-sass": "^4.7.2",
     "postcss-loader": "^2.0.9",
     "react-hot-loader": "^3.1.3",
     "rimraf": "^2.6.2",
+    "sass-loader": "^6.0.6",
     "ts-jest": "^21.2.3",
     "ts-loader": "^3.1.1",
     "ts-node": "^4.0.2",
@@ -47,7 +55,6 @@
     "webpack-dev-server": "^2.9.4"
   },
   "dependencies": {
-    "glamor": "^3.0.0-3",
     "react": "^16.1.1",
     "react-dom": "^16.1.1"
   }
