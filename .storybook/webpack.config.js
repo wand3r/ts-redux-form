@@ -23,7 +23,7 @@ module.exports = function(storybookConfig, configType) {
     },
   ]
 
-  storybookConfig.devtool = "cheap-module-source-map"
+  storybookConfig.devtool = "cheap-module-eval-source-map"
   storybookConfig.resolve.extensions = [
     ...storybookConfig.resolve.extensions,
     ".ts",

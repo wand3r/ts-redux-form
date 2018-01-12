@@ -15,7 +15,10 @@ export default (env: { environment: any; analyze: any }) => {
   console.log(`Running webpack in ${environment} mode`)
 
   const entry: Config["entry"] = {
-    app: ["react-hot-loader/patch", resolvePath(__dirname, "src", "index.tsx")],
+    app: [
+      "react-hot-loader/patch",
+      resolvePath(__dirname, "examples", "index.tsx"),
+    ],
   }
 
   const output: Config["output"] = {
@@ -25,7 +28,7 @@ export default (env: { environment: any; analyze: any }) => {
   }
 
   const resolve: Config["resolve"] = {
-    modules: ["node_modules", resolvePath(__dirname, "src")],
+    modules: ["node_modules"],
     extensions: [".ts", ".tsx", ".js", ".scss"],
   }
 
@@ -40,7 +43,6 @@ export default (env: { environment: any; analyze: any }) => {
       {
         test: /\.tsx?$/,
         use: [{ loader: "react-hot-loader/webpack" }, { loader: "ts-loader" }],
-        include: resolvePath(__dirname, "src"),
       },
       {
         test: /\.scss$/,
@@ -68,7 +70,7 @@ export default (env: { environment: any; analyze: any }) => {
     ...(environment === "development"
       ? [
           new HtmlWebpackPlugion({
-            template: resolvePath("src", "index.html"),
+            template: resolvePath("examples", "index.html"),
           }),
           new webpack.HotModuleReplacementPlugin(),
           new webpack.NamedModulesPlugin(),
