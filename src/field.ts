@@ -124,11 +124,32 @@ export const setAsyncValidationResults = <T>(
   },
 })
 
-const validateSyncRules = <T>(value: T, rules: SyncRules<T> | undefined) =>
+const validateSyncRules = <T>(
+  value: T,
+  rules: SyncRules<T> | undefined = {},
+): FieldValidity =>
   O.map(
     (rule) => (rule(value) ? RuleValidity.valid : RuleValidity.invalid),
-    rules || {},
+    rules,
   )
 
-const setPendingAsyncRules = <T>(rules: AsyncRules<T> | undefined) =>
-  O.map(() => RuleValidity.pending, rules || {})
+export const validateAsyncRules = <T>(
+  value: T,
+  asyncRules: AsyncRules<T> | undefined = {},
+): Promise<{ [rule: string]: boolean }> => {
+  const results = O.mapToArray(
+    (rule, ruleName) =>
+      rule(value).then((isValid) => ({
+        ruleName,
+        validity: isValid,
+      })),
+    asyncRules,
+  )
+  return Promise.all(results).then(
+    O.fromArray((x) => x.ruleName, (x) => x.validity),
+  )
+}
+
+const setPendingAsyncRules = <T>(
+  rules: AsyncRules<T> | undefined,
+): FieldValidity => O.map(() => RuleValidity.pending, rules || {})
