@@ -9,47 +9,48 @@ import { AnyFormSchema } from "./form"
 import { keys } from "ts-object"
 
 type Cancelation = () => void
-
-const runningFieldValidation: {
-  [fieldKey: string]: Cancelation
-} = {}
+type FieldValidationDict = { [fieldKey: string]: Cancelation }
 
 const fieldValidationKey = (field: string, form: string) => `${form}-${field}`
 
 export const asyncValidationMiddleware: (
   asyncValidationDebounceTime: number,
-) => Middleware = (asyncValidationDebounceTime = 200) => (store) => (next) => (
-  action,
-) => {
-  const result = next(action)
+) => Middleware = (asyncValidationDebounceTime = 200) => {
+  const runningFieldValidation: FieldValidationDict = {}
 
-  if (changeFormField.match(action)) {
-    const { payload: { field, value, formSchema } } = action
-    runFieldAsyncValidation(
-      value,
-      formSchema,
-      field,
-      asyncValidationDebounceTime,
-      store.dispatch,
-    )
-  }
+  return ({ dispatch }) => (next) => (action) => {
+    const result = next(action)
 
-  if (initializeForm.match(action)) {
-    const { formSchema } = action.payload
-
-    for (const fieldName in formSchema.fields) {
-      const field = formSchema.fields[fieldName]
+    if (changeFormField.match(action)) {
+      const { payload: { field, value, formSchema } } = action
       runFieldAsyncValidation(
-        field.initialValue,
+        value,
         formSchema,
-        fieldName,
+        field,
         asyncValidationDebounceTime,
-        store.dispatch,
+        dispatch,
+        runningFieldValidation,
       )
     }
-  }
 
-  return result
+    if (initializeForm.match(action)) {
+      const { formSchema } = action.payload
+
+      for (const fieldName in formSchema.fields) {
+        const field = formSchema.fields[fieldName]
+        runFieldAsyncValidation(
+          field.initialValue,
+          formSchema,
+          fieldName,
+          asyncValidationDebounceTime,
+          dispatch,
+          runningFieldValidation,
+        )
+      }
+    }
+
+    return result
+  }
 }
 
 const runFieldAsyncValidation = (
@@ -58,6 +59,7 @@ const runFieldAsyncValidation = (
   field: string,
   asyncValidationDebounceTime: number,
   dispatch: Dispatch<any>,
+  runningFieldValidation: FieldValidationDict,
 ): void => {
   const asyncRules = formSchema.fields[field].rules.async
 
