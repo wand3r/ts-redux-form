@@ -4,6 +4,10 @@ import * as Forms from "./forms"
 import * as Form from "./form"
 import * as actions from "./actions"
 
+export { asyncValidationMiddleware } from "./async-validation-middleware"
+
+export { FormSchema, FormState, FormInfo } from "./form"
+
 export const getFormState = <Model>(
   formName: string,
   store: Forms.FormsState,
@@ -36,7 +40,3 @@ export const createFieldActions = (
   focusField: () => actions.focusField({ field, formSchema }),
   blurField: () => actions.blurField({ field, formSchema }),
 })
-
-export * from "./async-validation-middleware"
-
-export { FormSchema, FormState, FormInfo } from "./form"
