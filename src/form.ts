@@ -28,28 +28,14 @@ export type FormSchema<Model> = {
 
 export type AnyFormSchema = FormSchema<{ [i: string]: any }>
 
-type FormStateBasedOnSchema<Schema extends FormSchema<{ [i: string]: any }>> = {
-  fields: {
-    [P in keyof Schema["fields"]]: {
-      value: Schema["fields"][P]["initialValue"]
-      initialValue: Schema["fields"][P]["initialValue"]
-      focus: boolean
-      validity: {
-        [P2 in keyof (Schema["fields"][P]["rules"]["sync"] &
-          Schema["fields"][P]["rules"]["async"])]: RuleValidity
-      }
-    }
-  }
-}
-
-export type FormInfo = {
-  fields: { [field: string]: FieldInfo }
+export type FormInfo<Model> = {
+  fields: { [P in keyof Model]: FieldInfo<Model[P]> }
   focus: boolean
   changed: boolean
   touched: boolean
   overallValidity: RuleValidity
 }
-export const getFormInfo = (form: AnyFormState): FormInfo => {
+export const getFormInfo = <Model>(form: FormState<Model>): FormInfo<Model> => {
   const fields = O.map((field) => getFieldInfo(field), form.fields)
   return {
     fields,

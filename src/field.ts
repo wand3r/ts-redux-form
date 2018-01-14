@@ -42,8 +42,8 @@ export const getFieldErros = (field: AnyFieldState): string[] =>
     O.filter((validity) => validity === RuleValidity.invalid, field.validity),
   )
 
-export type FieldInfo = {
-  initialValue: any
+export type FieldInfo<Value> = {
+  initialValue: Value
   value: any
   focus: boolean
   changed: boolean
@@ -53,7 +53,9 @@ export type FieldInfo = {
   anyPendingValidation: boolean
   errors: string[]
 }
-export const getFieldInfo = (field: AnyFieldState): FieldInfo => {
+export const getFieldInfo = <Value>(
+  field: FieldState<Value>,
+): FieldInfo<Value> => {
   const { value, validity, focus, initialValue, changed, touched } = field
   return {
     initialValue,

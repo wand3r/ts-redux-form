@@ -11,7 +11,7 @@
     "compile-webpack-config": "tsc --allowSyntheticDefaultImports --skipLibCheck webpack.config.ts",
     "run-dev-server-with-examples": "npm run compile-webpack-config && webpack-dev-server --env.environment development",
     "clean": "rimraf dist",
-    "build": "npm run clean && npm run tsc -p tsconfig.publish.json",
+    "build": "npm run clean && tsc -p tsconfig.publish.json",
     "prepublishOnly": "npm run build",
     "test": "jest",
     "test-watch": "jest --watch",

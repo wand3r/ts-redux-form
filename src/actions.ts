@@ -28,18 +28,3 @@ export const setFormFieldAsyncValidity = actionCreator.async<
   { result: { [rule: string]: boolean } },
   any
 >("SET_FIELD_ASYNC_VALIDITY")
-
-export const formActions = (formSchema: AnyFormSchema) => ({
-  initializeForm: () => initializeForm({ formSchema }),
-  changeFormField: (value: any, field: string) =>
-    changeFormField({ value, field, formSchema }),
-  focusField: (field: string) => focusField({ field, formSchema }),
-  blurField: (field: string) => blurField({ field, formSchema }),
-})
-
-export const fieldActions = (formSchema: AnyFormSchema, field: string) => ({
-  changeFormField: (value: any) =>
-    changeFormField({ value, field, formSchema }),
-  focusField: () => focusField({ field, formSchema }),
-  blurField: () => blurField({ field, formSchema }),
-})
