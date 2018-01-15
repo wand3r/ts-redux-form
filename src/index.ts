@@ -2,7 +2,8 @@ import { FormInfo, FormState } from "./form"
 import { pipe } from "ts-function"
 import * as Forms from "./forms"
 import * as Form from "./form"
-import * as actions from "./actions"
+
+import * as formActions from "./actions"
 
 export { asyncValidationMiddleware } from "./async-validation-middleware"
 
@@ -21,7 +22,7 @@ export const getFormInfo = <Model>(
 
 export const formsReducer = Forms.formsReducer
 
-export const actions = actions
+export const actions = formActions
 
 export const createFormActions = (formSchema: Form.AnyFormSchema) => ({
   initializeForm: () => actions.initializeForm({ formSchema }),

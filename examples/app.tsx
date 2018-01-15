@@ -1,8 +1,8 @@
 import React from "react"
-import { FizzBuzzCounter } from "./sample-module/component"
+import { FormWithNativeControls } from "./form-with-native-controls"
 
 export const App = () => (
   <div>
-    <FizzBuzzCounter />
+    <FormWithNativeControls />
   </div>
 )
