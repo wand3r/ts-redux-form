@@ -16,7 +16,11 @@
     "noUnusedParameters": false,
     "noImplicitReturns": true,
     "forceConsistentCasingInFileNames": true,
-    "lib": ["es2015", "dom"]
+    "lib": ["es2015", "dom"],
+    "baseUrl": ".",
+    "paths": {
+      "ts-redux-form": ["src"]
+    }
   },
   "include": ["src", "examples"]
 }
