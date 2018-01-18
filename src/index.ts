@@ -3,7 +3,8 @@ import { pipe } from "ts-function"
 import * as Forms from "./forms"
 import * as Form from "./form"
 
-import * as formActions from "./actions"
+import * as rawFormActions from "./actions"
+import { map } from "ts-object";
 
 export { asyncValidationMiddleware } from "./async-validation-middleware"
 
@@ -22,22 +23,14 @@ export const getFormInfo = <Model>(
 
 export const formsReducer = Forms.formsReducer
 
-export const actions = formActions
+export const actions = rawFormActions
 
-export const createFormActions = (formSchema: Form.AnyFormSchema) => ({
+export const createFormActions = <TModel>(formSchema: Form.FormSchema<TModel>) => ({
   initializeForm: () => actions.initializeForm({ formSchema }),
-  changeFormField: (value: any, field: string) =>
-    actions.changeFormField({ value, field, formSchema }),
-  focusField: (field: string) => actions.focusField({ field, formSchema }),
-  blurField: (field: string) => actions.blurField({ field, formSchema }),
-})
-
-export const createFieldActions = (
-  formSchema: Form.AnyFormSchema,
-  field: string,
-) => ({
-  changeFormField: (value: any) =>
-    actions.changeFormField({ value, field, formSchema }),
-  focusField: () => actions.focusField({ field, formSchema }),
-  blurField: () => actions.blurField({ field, formSchema }),
+  fields: map((field, fieldName) => ({
+    changeFormField: (value: typeof field.initialValue) =>
+      actions.changeFormField({ field: fieldName, value, formSchema }),
+    focusField: () => actions.focusField({ field: fieldName, formSchema }),
+    blurField: () => actions.blurField({ field: fieldName, formSchema }),
+  }) , formSchema.fields)
 })

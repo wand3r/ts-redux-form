@@ -1,4 +1,4 @@
-import { FormSchema } from "ts-redux-form"
+import { FormSchema, createFormActions } from "ts-redux-form"
 
 export type AuthenticationModel = {
   email: string
@@ -15,8 +15,8 @@ export const authenticationFormSchema: AuthenticationFormSchema = {
       initialValue: "",
       rules: {
         sync: {
-          moreThen4Chars: (str) => str.length > 4,
-          lessThen30Chars: (str) => str.length < 30,
+          moreThan4Chars: (str) => str.length > 4,
+          lessThan30Chars: (str) => str.length < 30,
           containsAtSign: (str) => str.includes("@"),
         },
         async: {
