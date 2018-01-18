@@ -1,9 +1,5 @@
 import { Middleware, Dispatch } from "redux"
-import {
-  changeFormField,
-  setFormFieldAsyncValidity,
-  initializeForm,
-} from "./actions"
+import { actions } from "./actions"
 import { validateAsyncRules } from "./field"
 import { AnyFormSchema } from "./form"
 import { keys } from "ts-object"
@@ -12,6 +8,8 @@ type Cancelation = () => void
 type FieldValidationDict = { [fieldKey: string]: Cancelation }
 
 const fieldValidationKey = (field: string, form: string) => `${form}-${field}`
+
+const { changeFormField, setFormFieldAsyncValidity, initializeForm } = actions
 
 export const asyncValidationMiddleware: (
   asyncValidationDebounceTime: number,

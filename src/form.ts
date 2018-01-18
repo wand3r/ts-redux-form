@@ -1,6 +1,6 @@
 import { reducerWithoutInitialState } from "typescript-fsa-reducers"
 import { RuleValidity, getOverallValidity, Rules } from "./validation-rules"
-import * as actions from "./actions"
+import { actions } from "./actions"
 import * as O from "ts-object"
 import {
   changeFieldValue,
@@ -21,6 +21,7 @@ export type FormState<Model> = {
 export type AnyFormState = FormState<{ [field: string]: any }>
 
 export type FormSchema<Model> = {
+  _id: symbol
   name: string
   rules: Rules<undefined>
   fields: { [P in keyof Model]: FieldSchema<Model[P]> }

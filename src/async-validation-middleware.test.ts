@@ -1,10 +1,8 @@
 import { FormSchema } from "./form"
 import { asyncValidationMiddleware } from "./async-validation-middleware"
-import {
-  focusField,
-  changeFormField,
-  setFormFieldAsyncValidity,
-} from "./actions"
+import { actions } from "./actions"
+
+const { focusField, setFormFieldAsyncValidity, changeFormField } = actions
 
 describe("async-validation-middleware", () => {
   const personForm: FormSchema<{ age: number }> = {

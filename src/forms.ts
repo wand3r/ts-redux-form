@@ -1,6 +1,6 @@
 import { AnyFormState, formReducer, FormState } from "./form"
 import { reducerWithInitialState } from "typescript-fsa-reducers"
-import * as actions from "./actions"
+import { actions } from "./actions"
 
 export type FormsState = { [formName: string]: AnyFormState }
 
