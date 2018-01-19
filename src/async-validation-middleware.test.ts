@@ -1,12 +1,11 @@
-import { FormSchema } from "./form"
+import { FormSchema, createSchema } from "./form"
 import { asyncValidationMiddleware } from "./async-validation-middleware"
 import { actions } from "./actions"
 
 const { focusField, setFormFieldAsyncValidity, changeFormField } = actions
 
 describe("async-validation-middleware", () => {
-  const personForm: FormSchema<{ age: number }> = {
-    name: "personForm",
+  const personForm = createSchema<{ age: number }>({
     rules: {},
     fields: {
       age: {
@@ -20,7 +19,7 @@ describe("async-validation-middleware", () => {
         },
       },
     },
-  }
+  })
 
   it("do nothing on other actions", () => {
     const middleware = asyncValidationMiddleware(200)

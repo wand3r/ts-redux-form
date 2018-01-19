@@ -80,10 +80,7 @@ export const initializeField = <T>({
   touched: false,
   leaved: false,
   focus: false,
-  validity: {
-    ...validateSyncRules(initialValue, rules.sync),
-    ...setPendingAsyncRules(rules.async),
-  },
+  validity: markAllRulesAsUnknow(rules),
 })
 
 export const changeFieldValue = <T>(
@@ -125,6 +122,12 @@ export const setAsyncValidationResults = <T>(
     ),
   },
 })
+
+const markAllRulesAsUnknow = <TValue>(rules: Rules<TValue>): FieldValidity =>
+  O.map((_, ruleName) => RuleValidity.unknown, {
+    ...(rules.sync || {}),
+    ...(rules.async || {}),
+  })
 
 const validateSyncRules = <T>(
   value: T,

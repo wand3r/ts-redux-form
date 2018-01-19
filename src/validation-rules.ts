@@ -1,4 +1,5 @@
 export enum RuleValidity {
+  unknown = "unknown",
   valid = "valid",
   invalid = "invalid",
   pending = "pending",
@@ -8,6 +9,7 @@ export const getOverallValidity = (xs: RuleValidity[]): RuleValidity =>
   //prettier-ignore
   xs.some(x => x === RuleValidity.invalid) ? RuleValidity.invalid :
   xs.some(x => x === RuleValidity.pending) ? RuleValidity.pending :
+  xs.some(x => x === RuleValidity.unknown) ? RuleValidity.unknown :
   RuleValidity.valid
 
 export type SyncRules<Value> = { [i: string]: (value: Value) => boolean }

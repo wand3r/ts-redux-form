@@ -1,4 +1,5 @@
 import { FormSchema, createFormActions } from "ts-redux-form"
+import { createSchema } from "src/form"
 
 export type AuthenticationModel = {
   email: string
@@ -7,8 +8,9 @@ export type AuthenticationModel = {
 
 export type AuthenticationFormSchema = FormSchema<AuthenticationModel>
 
-export const authenticationFormSchema: AuthenticationFormSchema = {
-  name: "authenticationForm",
+export const authenticationFormSchema: AuthenticationFormSchema = createSchema<
+  AuthenticationModel
+>({
   rules: {},
   fields: {
     email: {
@@ -38,7 +40,7 @@ export const authenticationFormSchema: AuthenticationFormSchema = {
       },
     },
   },
-}
+})
 
 const wait = (ms: number) =>
   new Promise((resolve, reject) => setTimeout(resolve, ms))

@@ -76,6 +76,7 @@
   "dependencies": {
     "ts-function": "^0.1.2",
     "ts-object": "^0.3.0",
+    "type-zoo": "^1.1.0",
     "typescript-fsa": "^2.5.0",
     "typescript-fsa-reducers": "^0.4.5"
   }

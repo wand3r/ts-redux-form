@@ -5,9 +5,11 @@ import { AnyFormSchema } from "./form"
 import { keys } from "ts-object"
 
 type Cancelation = () => void
-type FieldValidationDict = { [fieldKey: string]: Cancelation }
-
-const fieldValidationKey = (field: string, form: string) => `${form}-${field}`
+type FieldValidationDict = {
+  [formId: string]: {
+    [fieldKey: string]: Cancelation
+  }
+}
 
 const { changeFormField, setFormFieldAsyncValidity, initializeForm } = actions
 
@@ -60,11 +62,15 @@ const runFieldAsyncValidation = (
   runningFieldValidation: FieldValidationDict,
 ): void => {
   const asyncRules = formSchema.fields[field].rules.async
+  const formId = formSchema._id
 
   if (!asyncRules || keys(asyncRules).length === 0) return
 
-  const key = fieldValidationKey(field, formSchema.name)
-  const cancelFieldValidation = runningFieldValidation[key]
+  if (runningFieldValidation[formId] === undefined) {
+    runningFieldValidation[formId] = {}
+  }
+
+  const cancelFieldValidation = runningFieldValidation[formId][field]
 
   cancelFieldValidation && cancelFieldValidation()
 
@@ -74,7 +80,7 @@ const runFieldAsyncValidation = (
     validateAsyncRules(value, asyncRules).then((result) => {
       if (canceled) return
 
-      delete runningFieldValidation[key]
+      delete runningFieldValidation[formId][field]
       dispatch(
         setFormFieldAsyncValidity.done({
           params: { field, formSchema },
@@ -84,9 +90,9 @@ const runFieldAsyncValidation = (
     })
   }, asyncValidationDebounceTime)
 
-  runningFieldValidation[key] = () => {
+  runningFieldValidation[formId][field] = () => {
     canceled = true
     clearTimeout(timeoutToken)
-    delete runningFieldValidation[key]
+    delete runningFieldValidation[formId][field]
   }
 }
