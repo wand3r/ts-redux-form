@@ -1,14 +1,11 @@
 import { AnyFormSchema, FormSchema } from "./form"
 import { actionCreatorFactory, AnyAction } from "typescript-fsa"
 import { some, map, values } from "ts-object"
+import { bindActionCreators, Dispatch } from "redux"
 
 const actionCreator = actionCreatorFactory("FORM")
 
 export const actions = {
-  initializeForm: actionCreator<{
-    formSchema: AnyFormSchema
-  }>("INITIALIZE"),
-
   changeFormField: actionCreator<{
     value: any
     field: string
@@ -43,15 +40,38 @@ export type FormAction = typeof _actions[number]
 export const isFormAction = (action: AnyAction): action is FormAction =>
   some((formAction) => formAction.type === action.type, actions)
 
-export const createFormActions = <TModel>(formSchema: FormSchema<TModel>) => ({
-  initializeForm: () => actions.initializeForm({ formSchema }),
+export const createFormActions = <TModel>(
+  formSchema: FormSchema<TModel>,
+): BindedActionCreators<TModel> => ({
   fields: map(
     (field, fieldName) => ({
-      changeFormField: (value: typeof field.initialValue) =>
+      change: (value: typeof field.initialValue) =>
         actions.changeFormField({ field: fieldName, value, formSchema }),
-      focusField: () => actions.focusField({ field: fieldName, formSchema }),
-      blurField: () => actions.blurField({ field: fieldName, formSchema }),
+      focus: () => actions.focusField({ field: fieldName, formSchema }),
+      blur: () => actions.blurField({ field: fieldName, formSchema }),
     }),
     formSchema.fields,
   ),
 })
+
+export const createFormActionsWithDispatch = <TModel>(
+  formSchema: FormSchema<TModel>,
+) => (dispatch: Dispatch<any>): BindedActionCreators<TModel> => {
+  const actions = createFormActions(formSchema)
+  return {
+    fields: map(
+      (action) => bindActionCreators(action, dispatch),
+      actions.fields,
+    ),
+  }
+}
+
+export type BindedActionCreators<TModel> = {
+  fields: {
+    [P in keyof TModel]: {
+      change: (value: TModel[P]) => void
+      focus: () => void
+      blur: () => void
+    }
+  }
+}

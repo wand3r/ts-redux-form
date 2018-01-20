@@ -5,9 +5,11 @@ import {
   AsyncRules,
   RuleValidity,
   getOverallValidity,
+  ValidityFlags,
+  mapToValidityFlags,
 } from "./validation-rules"
 
-export type FieldValidity = {
+export type RulesValidity = {
   [rule: string]: RuleValidity
 }
 
@@ -23,23 +25,23 @@ export type FieldState<T> = {
   touched: boolean
   leaved: boolean
   changed: boolean
-  validity: FieldValidity
+  rulesValidity: RulesValidity
 }
 
 export type AnyFieldState = FieldState<any>
 
-export const isFieldValid = (field: AnyFieldState): boolean =>
-  O.every((validity) => validity === RuleValidity.valid, field.validity)
-
 export const getFieldOverallValidity = (field: FieldState<any>): RuleValidity =>
-  getOverallValidity(O.values(field.validity))
+  getOverallValidity(O.values(field.rulesValidity))
 
-export const isFieldValidationInProgress = (field: AnyFieldState): boolean =>
-  O.some((validity) => validity === RuleValidity.pending, field.validity)
+export const isFieldValidationPending = (field: AnyFieldState): boolean =>
+  O.some((validity) => validity === RuleValidity.pending, field.rulesValidity)
 
 export const getFieldErros = (field: AnyFieldState): string[] =>
   Object.keys(
-    O.filter((validity) => validity === RuleValidity.invalid, field.validity),
+    O.filter(
+      (validity) => validity === RuleValidity.invalid,
+      field.rulesValidity,
+    ),
   )
 
 export type FieldInfo<Value> = {
@@ -48,25 +50,23 @@ export type FieldInfo<Value> = {
   focus: boolean
   changed: boolean
   touched: boolean
-  validity: FieldValidity
-  overallValidity: RuleValidity
-  anyPendingValidation: boolean
+  leaved: boolean
+  rulesValidity: RulesValidity
+  isValidationPending: boolean
+  validity: RuleValidity
   errors: string[]
-}
+} & ValidityFlags
+
 export const getFieldInfo = <Value>(
   field: FieldState<Value>,
 ): FieldInfo<Value> => {
-  const { value, validity, focus, initialValue, changed, touched } = field
+  const validity = getFieldOverallValidity(field)
   return {
-    initialValue,
-    value,
-    focus,
-    changed,
-    touched,
+    ...field,
     validity,
-    overallValidity: getFieldOverallValidity(field),
-    anyPendingValidation: isFieldValidationInProgress(field),
+    isValidationPending: isFieldValidationPending(field),
     errors: getFieldErros(field),
+    ...mapToValidityFlags(validity),
   }
 }
 
@@ -80,7 +80,7 @@ export const initializeField = <T>({
   touched: false,
   leaved: false,
   focus: false,
-  validity: markAllRulesAsUnknow(rules),
+  rulesValidity: markAllRulesAsUnknow(rules),
 })
 
 export const changeFieldValue = <T>(
@@ -91,7 +91,7 @@ export const changeFieldValue = <T>(
   ...field,
   value,
   changed: true,
-  validity: {
+  rulesValidity: {
     ...validateSyncRules(value, rules.sync),
     ...setPendingAsyncRules(rules.async),
   },
@@ -114,8 +114,8 @@ export const setAsyncValidationResults = <T>(
   field: FieldState<T>,
 ): FieldState<T> => ({
   ...field,
-  validity: {
-    ...field.validity,
+  rulesValidity: {
+    ...field.rulesValidity,
     ...O.map(
       (validity) => (validity ? RuleValidity.valid : RuleValidity.invalid),
       result,
@@ -123,7 +123,7 @@ export const setAsyncValidationResults = <T>(
   },
 })
 
-const markAllRulesAsUnknow = <TValue>(rules: Rules<TValue>): FieldValidity =>
+const markAllRulesAsUnknow = <TValue>(rules: Rules<TValue>): RulesValidity =>
   O.map((_, ruleName) => RuleValidity.unknown, {
     ...(rules.sync || {}),
     ...(rules.async || {}),
@@ -132,7 +132,7 @@ const markAllRulesAsUnknow = <TValue>(rules: Rules<TValue>): FieldValidity =>
 const validateSyncRules = <T>(
   value: T,
   rules: SyncRules<T> | undefined = {},
-): FieldValidity =>
+): RulesValidity =>
   O.map(
     (rule) => (rule(value) ? RuleValidity.valid : RuleValidity.invalid),
     rules,
@@ -157,4 +157,4 @@ export const validateAsyncRules = <T>(
 
 const setPendingAsyncRules = <T>(
   rules: AsyncRules<T> | undefined,
-): FieldValidity => O.map(() => RuleValidity.pending, rules || {})
+): RulesValidity => O.map(() => RuleValidity.pending, rules || {})

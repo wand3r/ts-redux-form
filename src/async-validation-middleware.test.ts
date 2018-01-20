@@ -1,4 +1,4 @@
-import { FormSchema, createSchema } from "./form"
+import { createSchema } from "./form"
 import { asyncValidationMiddleware } from "./async-validation-middleware"
 import { actions } from "./actions"
 

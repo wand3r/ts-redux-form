@@ -29,6 +29,9 @@ export default (env: { environment: any; analyze: any }) => {
 
   const resolve: Config["resolve"] = {
     modules: ["node_modules"],
+    alias: {
+      "ts-redux-form": resolvePath(__dirname, "src"),
+    },
     extensions: [".ts", ".tsx", ".js", ".scss"],
   }
 

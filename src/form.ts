@@ -1,5 +1,11 @@
 import { reducerWithInitialState } from "typescript-fsa-reducers"
-import { RuleValidity, getOverallValidity, Rules } from "./validation-rules"
+import {
+  RuleValidity,
+  getOverallValidity,
+  Rules,
+  ValidityFlags,
+  mapToValidityFlags,
+} from "./validation-rules"
 import { actions, isFormAction } from "./actions"
 import * as O from "ts-object"
 import {
@@ -43,18 +49,20 @@ export type FormInfo<Model> = {
   focus: boolean
   changed: boolean
   touched: boolean
-  overallValidity: RuleValidity
-}
+  validity: RuleValidity
+} & ValidityFlags
 export const getFormInfo = <Model>(form: FormState<Model>): FormInfo<Model> => {
   const fields = O.map((field) => getFieldInfo(field), form.fields)
+  const validity = getOverallValidity(
+    O.mapToArray((field) => field.validity, fields),
+  )
   return {
     fields,
     focus: O.some((field) => field.focus, fields),
     changed: O.some((field) => field.changed, fields),
     touched: O.some((field) => field.touched, fields),
-    overallValidity: getOverallValidity(
-      O.mapToArray((field) => field.overallValidity, fields),
-    ),
+    validity,
+    ...mapToValidityFlags(validity),
   }
 }
 
@@ -106,7 +114,7 @@ export const formReducer = <TModel>(formSchema: FormSchema<TModel>) => {
       },
     }))
 
-  return (state: AnyFormState, action: AnyAction) => {
+  return (state: AnyFormState = initialState, action: AnyAction) => {
     if (!isFormAction(action)) return state
     if (action.payload.formSchema._id !== formSchema._id) return state
     else return reducer(state, action)

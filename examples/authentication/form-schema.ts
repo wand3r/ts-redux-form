@@ -1,5 +1,4 @@
-import { FormSchema, createFormActions } from "ts-redux-form"
-import { createSchema } from "src/form"
+import { FormSchema, createSchema } from "ts-redux-form"
 
 export type AuthenticationModel = {
   email: string
