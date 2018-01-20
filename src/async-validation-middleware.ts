@@ -11,7 +11,7 @@ type FieldValidationDict = {
   }
 }
 
-const { changeFormField, setFormFieldAsyncValidity, initializeForm } = actions
+const { changeFormField, setFormFieldAsyncValidity } = actions
 
 export const asyncValidationMiddleware: (
   asyncValidationDebounceTime: number,
@@ -31,22 +31,6 @@ export const asyncValidationMiddleware: (
         dispatch,
         runningFieldValidation,
       )
-    }
-
-    if (initializeForm.match(action)) {
-      const { formSchema } = action.payload
-
-      for (const fieldName in formSchema.fields) {
-        const field = formSchema.fields[fieldName]
-        runFieldAsyncValidation(
-          field.initialValue,
-          formSchema,
-          fieldName,
-          asyncValidationDebounceTime,
-          dispatch,
-          runningFieldValidation,
-        )
-      }
     }
 
     return result
@@ -82,9 +66,10 @@ const runFieldAsyncValidation = (
 
       delete runningFieldValidation[formId][field]
       dispatch(
-        setFormFieldAsyncValidity.done({
-          params: { field, formSchema },
-          result: { result },
+        setFormFieldAsyncValidity({
+          field,
+          formSchema,
+          result,
         }),
       )
     })

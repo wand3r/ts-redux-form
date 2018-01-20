@@ -36,9 +36,10 @@ describe("async-validation-middleware", () => {
   it("dispatch one setFormFieldAsyncValidity action after one changeFormField action", (done) => {
     const dispatch = jest.fn((action) => {
       expect(action).toEqual(
-        setFormFieldAsyncValidity.done({
-          params: { formSchema: personForm, field: "age" },
-          result: { result: { moreThen12: false, lessThen100: true } },
+        setFormFieldAsyncValidity({
+          formSchema: personForm,
+          field: "age",
+          result: { moreThen12: false, lessThen100: true },
         }),
       )
       done()
@@ -61,9 +62,10 @@ describe("async-validation-middleware", () => {
   it("dispatch one setFormFieldAsyncValidity action after many changeFormField action in short time", (done) => {
     const dispatch = jest.fn((action) => {
       expect(action).toEqual(
-        setFormFieldAsyncValidity.done({
-          params: { formSchema: personForm, field: "age" },
-          result: { result: { moreThen12: true, lessThen100: false } },
+        setFormFieldAsyncValidity({
+          formSchema: personForm,
+          field: "age",
+          result: { moreThen12: true, lessThen100: false },
         }),
       )
       done()
@@ -99,17 +101,19 @@ describe("async-validation-middleware", () => {
       .fn()
       .mockImplementationOnce((action) => {
         expect(action).toEqual(
-          setFormFieldAsyncValidity.done({
-            params: { formSchema: personForm, field: "age" },
-            result: { result: { moreThen12: true, lessThen100: true } },
+          setFormFieldAsyncValidity({
+            formSchema: personForm,
+            field: "age",
+            result: { moreThen12: true, lessThen100: true },
           }),
         )
       })
       .mockImplementationOnce((action) => {
         expect(action).toEqual(
-          setFormFieldAsyncValidity.done({
-            params: { formSchema: personForm, field: "age" },
-            result: { result: { moreThen12: true, lessThen100: false } },
+          setFormFieldAsyncValidity({
+            formSchema: personForm,
+            field: "age",
+            result: { moreThen12: true, lessThen100: false },
           }),
         )
         done()

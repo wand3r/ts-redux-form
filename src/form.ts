@@ -1,7 +1,4 @@
-import {
-  reducerWithoutInitialState,
-  reducerWithInitialState,
-} from "typescript-fsa-reducers"
+import { reducerWithInitialState } from "typescript-fsa-reducers"
 import { RuleValidity, getOverallValidity, Rules } from "./validation-rules"
 import { actions, isFormAction } from "./actions"
 import * as O from "ts-object"
@@ -26,6 +23,7 @@ export type FormState<Model> = {
 export type AnyFormState = FormState<{ [field: string]: any }>
 
 export type FormSchema<Model> = {
+  /** @internal */
   _id: symbol
   rules: Rules<undefined>
   fields: { [P in keyof Model]: FieldSchema<Model[P]> }
@@ -60,10 +58,14 @@ export const getFormInfo = <Model>(form: FormState<Model>): FormInfo<Model> => {
   }
 }
 
+const initializeForm = <TModel>(
+  formSchema: FormSchema<TModel>,
+): FormState<TModel> => ({
+  fields: O.map((field) => initializeField(field), formSchema.fields),
+})
+
 export const formReducer = <TModel>(formSchema: FormSchema<TModel>) => {
-  const initialState = {
-    fields: O.map((field) => initializeField(field), formSchema.fields),
-  }
+  const initialState = initializeForm(formSchema)
   const reducer = reducerWithInitialState<AnyFormState>(initialState)
     .case(actions.changeFormField, (state, { field, value, formSchema }) => {
       //TODO: add form level validation
@@ -79,19 +81,16 @@ export const formReducer = <TModel>(formSchema: FormSchema<TModel>) => {
         },
       }
     })
-    .case(
-      actions.setFormFieldAsyncValidity.done,
-      (state, { result: { result }, params: { field } }) => {
-        //TODO: add form level validation
-        return {
-          ...state,
-          fields: {
-            ...state.fields,
-            [field]: setAsyncValidationResults(result, state.fields[field]),
-          },
-        }
-      },
-    )
+    .case(actions.setFormFieldAsyncValidity, (state, { field, result }) => {
+      //TODO: add form level validation
+      return {
+        ...state,
+        fields: {
+          ...state.fields,
+          [field]: setAsyncValidationResults(result, state.fields[field]),
+        },
+      }
+    })
     .caseWithAction(actions.focusField, (state, { payload: { field } }) => ({
       ...state,
       fields: {
@@ -108,8 +107,8 @@ export const formReducer = <TModel>(formSchema: FormSchema<TModel>) => {
     }))
 
   return (state: AnyFormState, action: AnyAction) => {
-    //TODO: check formSchema Id with reducer id
-    if (!isFormAction(action) || action.) return state
+    if (!isFormAction(action)) return state
+    if (action.payload.formSchema._id !== formSchema._id) return state
     else return reducer(state, action)
   }
 }

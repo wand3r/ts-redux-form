@@ -1,17 +1,20 @@
 import { createStore, combineReducers, applyMiddleware } from "redux"
 import { formReducer, FormState } from "ts-redux-form"
-import { AuthenticationModel } from "examples/authentication/form-schema"
+import {
+  AuthenticationModel,
+  authenticationFormSchema,
+} from "examples/authentication/form-schema"
 import { asyncValidationMiddleware } from "src/async-validation-middleware"
 
-type StoreModel = {
+type GlobalState = {
   authentication: {
     form: FormState<AuthenticationModel>
   }
 }
 
-const rootReducer = combineReducers<StoreModel>({
+const rootReducer = combineReducers<GlobalState>({
   authentication: combineReducers({
-    form: formReducer,
+    form: formReducer(authenticationFormSchema),
   }),
 })
 

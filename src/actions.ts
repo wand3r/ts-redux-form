@@ -1,6 +1,6 @@
 import { AnyFormSchema, FormSchema } from "./form"
-import { actionCreatorFactory } from "typescript-fsa"
-import { some, map } from "ts-object"
+import { actionCreatorFactory, AnyAction } from "typescript-fsa"
+import { some, map, values } from "ts-object"
 
 const actionCreator = actionCreatorFactory("FORM")
 
@@ -25,14 +25,22 @@ export const actions = {
     formSchema: AnyFormSchema
   }>("BLUR_FIELD"),
 
-  setFormFieldAsyncValidity: actionCreator.async<
-    { field: string; formSchema: AnyFormSchema },
-    { result: { [rule: string]: boolean } },
-    any
-  >("SET_FIELD_ASYNC_VALIDITY"),
+  setFormFieldAsyncValidity: actionCreator<{
+    field: string
+    formSchema: AnyFormSchema
+    result: { [rule: string]: boolean }
+  }>("SET_FIELD_ASYNC_VALIDITY"),
 }
 
-export const isFormAction = (action: { type: string }): boolean =>
+const expressionType = <T>(x: (...args: any[]) => T) => {
+  return {} as T
+}
+
+const _actions = values(actions).map(expressionType)
+
+export type FormAction = typeof _actions[number]
+
+export const isFormAction = (action: AnyAction): action is FormAction =>
   some((formAction) => formAction.type === action.type, actions)
 
 export const createFormActions = <TModel>(formSchema: FormSchema<TModel>) => ({
